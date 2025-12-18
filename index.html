@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Delivery Bad Experience Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffebee, #ffcdd2);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      max-width: 700px;
+      width: 97%;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+    h2 { color: #b71c1c; margin-top: 0; }
+    select, button {
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+    }
+    button { border: none; cursor: pointer; }
+    .new-btn { background: #c62828; color: #fff; }
+    .copy-btn { background: #2e7d32; color: #fff; }
+    .review {
+      margin: 16px 0;
+      font-size: 15px;
+      color: #333;
+      white-space: pre-line;
+      text-align: left;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .note { font-size: 12px; color: #555; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>⚠️ Bad Food Delivery Experience ⚠️</h2>
+  <div class="instructions">
+    <strong>How to use:</strong>
+    <ul>
+      <li>Install the app you want to review</li>
+      <li>Use it for 3–5 minutes</li>
+      <li>Write and share an <em>honest</em> review based on your experience</li>
+    </ul>
+  </div>  <select id="language">
+    <option value="english">English</option>
+    <option value="hinglish">Hinglish</option>
+  </select>  <div id="review" class="review"></div><button class="new-btn" onclick="generateReview()">Generate Review</button> <button class="copy-btn" onclick="copyReview()">Copy Review</button>
+
+  <div class="note">Language-pure • Logical flows • Add your own reviews in code using commas</div>
+</div><script>
+// ---------------- DATA ----------------
+const CUSTOM_EN = [
+  // Add your English reviews here separated by comma
+  "Paid full amount but food never arrived", 
+  "Delivery was extremely late and cold food received",
+  "Customer support ignored my complaints"
+];
+
+const CUSTOM_HI = [
+  // Add your Hinglish reviews here separated by comma
+  "Paise kat gaye lekin khana deliver nahi hua",
+  "Delivery bahut late hui aur khana thanda tha",
+  "Customer support ne complaint ignore kar di"
+];
+
+const EN = {
+  food: { start: ["My experience with", "Ordering food from", "Using", "The service from"], platform: ["this food delivery app", "an online food platform", "a tiffin delivery service"], issue: ["the food was old and stale","the meal was extremely oily","the food quality was very poor","the food smelled bad","the food was unhygienic"], delivery: ["delivery was very late","tracking was inaccurate","delivery instructions were ignored"], support: ["customer support did not help","complaints were ignored","support closed the issue without resolution"], end: ["This experience was unacceptable.","Food safety was clearly ignored.","I would not recommend this service."]},
+  nod: { start: ["My experience with","Ordering food from","Using"], platform: ["this food delivery app","an online food platform","a tiffin delivery service"], payment: ["payment was taken but the order was never delivered","money was deducted and the order was cancelled","the order never arrived after payment"], support: ["customer support did not help","complaints were ignored","support closed the issue without resolution"], end: ["This experience was unacceptable.","Customer money was not respected.","I would not recommend this service."] }
+};
+
+const HI = {
+  food: { start: ["Mera experience","Is service se order karna","Is delivery app ka use karna"], platform: ["is food delivery app par","online food platform se","ek tiffin service se"], issue: ["khana bahut purana tha","khana bahut zyada oily tha","quality bilkul kharab thi","khane se badbu aa rahi thi","khana bilkul unhygienic tha"], delivery: ["delivery bahut late hui","tracking ka koi update nahi tha","delivery instructions follow nahi hui"], support: ["customer support ne koi help nahi ki","complaint ignore kar di gayi","support ne bina solution ticket close kar diya"], end: ["Yeh experience bilkul unacceptable tha.","Food safety ki koi value nahi thi.","Main is service ko recommend nahi karunga."]},
+  nod: { start: ["Mera experience","Is service se order karna","Is delivery app ka use karna"], platform: ["is food delivery app par","online food platform se","ek tiffin service se"], payment: ["paise kat gaye lekin khana deliver nahi hua","payment ke baad order cancel kar diya gaya","order aaya hi nahi jabki paise kat chuke the"], support: ["customer support ne koi help nahi ki","complaint ignore kar di gayi","support ne bina solution ticket close kar diya"], end: ["Yeh experience bilkul unacceptable tha.","Customer ke paise ki koi value nahi thi.","Main is service ko recommend nahi karunga."]}
+};
+
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function generateAutoReview(lang){
+  const data = lang === "english" ? EN : HI;
+  const custom = lang === "english" ? CUSTOM_EN : CUSTOM_HI;
+  if(custom.length>0 && Math.random()>0.5) return pick(custom);
+  const flow = Math.random() > 0.5 ? "food" : "nod";
+  let r = [];
+  if(flow === "food"){
+    r.push(pick(data.food.start)+" "+pick(data.food.platform)+".");
+    r.push(pick(data.food.issue)+".");
+    if(Math.random()>0.5) r.push(pick(data.food.delivery)+".");
+    r.push(pick(data.food.support)+".");
+    r.push(pick(data.food.end));
+  }else{
+    r.push(pick(data.nod.start)+" "+pick(data.nod.platform)+".");
+    r.push(pick(data.nod.payment)+".");
+    r.push(pick(data.nod.support)+".");
+    r.push(pick(data.nod.end));
+  }
+  return r.join(" ");
+}
+
+function generateReview(){
+  const lang = document.getElementById("language").value;
+  document.getElementById("review").innerText = generateAutoReview(lang);
+}
+
+function copyReview(){
+  const text = document.getElementById("review").innerText;
+  if(!text) return;
+  if(navigator.clipboard && window.isSecureContext){navigator.clipboard.writeText(text).then(()=>alert("Review copied! ✅"));}
+  else{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);alert("Review copied! ✅");}
+}
+
+const langSelect=document.getElementById("language");
+langSelect.value=Math.random()>0.5?"english":"hinglish";
+generateReview();
+</script></body>
+</html>
